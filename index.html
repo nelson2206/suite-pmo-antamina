@@ -299,6 +299,25 @@
   @keyframes blink{0%,60%,100%{opacity:.25}30%{opacity:1}}
   .warnbar{background:var(--warn-soft);color:var(--warn);border:1px solid color-mix(in srgb,var(--warn) 35%,var(--line));border-radius:8px;padding:7px 10px;font-size:12px;margin-bottom:8px}
   .aihint{font-size:11.5px;color:var(--muted);margin-top:5px;font-style:italic}
+  .trans-txt{background:var(--surface-3);border:1px solid var(--line);border-radius:10px;padding:14px;
+    font-size:13.5px;line-height:1.65;white-space:pre-wrap;max-height:340px;overflow-y:auto;color:var(--ink-soft)}
+  .src{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);
+    border-radius:9px;background:var(--surface);font-size:12px;margin-top:6px}
+  .src .sn{width:19px;height:19px;flex:0 0 auto;border-radius:5px;background:var(--copper-soft);
+    color:var(--copper);display:grid;place-items:center;font-weight:800;font-size:10.5px}
+  .src .st2{font-weight:650;color:var(--ink)}
+  .src .sx{color:var(--muted);font-size:11.5px;margin-top:2px}
+  .src mark{background:var(--warn-soft);color:var(--ink);padding:0 2px;border-radius:3px}
+  .fuentes-lbl{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+    font-weight:750;margin-top:12px}
+  .dbchip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:650;
+    padding:4px 10px;border-radius:999px;background:var(--info-soft);color:var(--info)}
+  .hitrow{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);
+    border-radius:11px;background:var(--surface);margin-bottom:8px;cursor:pointer}
+  .hitrow:hover{border-color:var(--brand)}
+  .hitrow .ht{font-weight:650;font-size:13.5px}
+  .hitrow .hx{font-size:12.5px;color:var(--ink-soft);margin-top:4px;line-height:1.5}
+  .hitrow .hm{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:4px}
 </style>
 
 <div class="wrap">
@@ -457,13 +476,53 @@ function seed(){
        {id:uid("cp"),desc:"Enviar plan de despliegue fase 1",responsable:"Marco Antón",fecha:Y+"-07-22",estado:"hecho"}],
      notas:""}
   ];
-  return {consultores:C,ausencias:A,proyectos:P,minutas:M,cfg:{ventana:30,umbral:90},v:1};
+  return {consultores:C,ausencias:A,proyectos:P,minutas:M,transcripciones:seedTranscripciones(),cfg:{ventana:30,umbral:90},v:2};
+}
+
+function seedTranscripciones(){
+  var Y=today().getFullYear(), NL=String.fromCharCode(10);
+  function t(id,titulo,fecha,pf,part,origen,texto){
+    return {id:"T-"+Y+"-"+id,titulo:titulo,fecha:Y+"-"+fecha,portafolio:pf,participantes:part,
+      origen:origen,texto:texto,caracteres:texto.length,
+      fragmentos:Math.max(1,Math.ceil(texto.length/900))};
+  }
+  return [
+    t("001","Comité semanal — Planta Concentradora (transcripción)","07-10","Planta Concentradora",
+      "Diego Salazar, Elena Palomino, J. Ramos","Teams",
+      ["Elena Palomino: Buenos días. Empecemos por el estado de la recuperación de molienda SAG.",
+      "Diego Salazar: El proyecto sigue en rojo. El avance es 28% contra un 45% planificado. La causa raíz es el retraso del repuesto crítico del molino: el proveedor original nos dio una ventana de doce semanas, lo que nos deja fuera de la parada programada.",
+      "J. Ramos: Confirmo. Sin ese repuesto no podemos arrancar las pruebas del 30 de julio.",
+      "Elena Palomino: ¿Qué alternativas tenemos?",
+      "Diego Salazar: Cotizamos con un proveedor alterno en Lima, entrega estimada cinco semanas, con un sobrecosto aproximado de 180 mil dólares sobre el presupuesto de 6.8 millones.",
+      "Elena Palomino: Procedamos con el proveedor alterno y escalemos el riesgo al comité de operaciones. Diego, confirma la fecha de llegada antes del 24 de julio.",
+      "J. Ramos: Reprogramamos la parada de planta a la semana 34 y actualizo el cronograma.",
+      "Elena Palomino: De acuerdo. Sobre el balance metalúrgico Q3, ¿cómo vamos?",
+      "Diego Salazar: En verde, 88% de avance, cierre previsto el 30 de septiembre sin observaciones.",
+      "Elena Palomino: Perfecto. La ejecución presupuestal del portafolio está en 41% de CAPEX, dentro de lo esperado."].join(NL)),
+    t("002","Kick-off — Torre de control PMO (transcripción)","07-14","Transformación Digital / TI",
+      "Marco Antón, Elena Palomino, P. Cruz","Teams",
+      ["Marco Antón: El objetivo de la Torre de control PMO es consolidar el estado de los seis portafolios en un solo tablero, con salida a producción el 15 de octubre.",
+      "P. Cruz: Desde TI necesitamos definir los accesos. Proponemos Dataverse con Entra ID, aprovechando el licenciamiento M365 que ya tiene Antamina.",
+      "Elena Palomino: ¿Cuál es el riesgo principal?",
+      "P. Cruz: La calidad de los datos maestros que vienen de SAP. En la integración SAP — Power BI encontramos duplicados en centros de costo; eso mantiene ese proyecto en ámbar.",
+      "Marco Antón: Coincido. La integración está en 50% y la certificación de datos es el hito del 28 de agosto. Si los maestros no se limpian, arrastramos el problema a la Torre de control.",
+      "Elena Palomino: Acordamos entonces: TI habilita accesos a Dataverse antes del 25 de julio, y Marco envía el plan de despliegue de la fase 1 el 22 de julio.",
+      "Marco Antón: Confirmado. El alcance de la fase 1 queda aprobado."].join(NL)),
+    t("003","Revisión mensual — Sostenibilidad y Medio Ambiente","07-08","Sostenibilidad & MA",
+      "Carla Ninanya, Elena Palomino, R. Vega (Comunidades)","Presencial",
+      ["Carla Ninanya: El monitoreo ambiental participativo va en verde, 65% de avance. La campaña de monitoreo con las comunidades está programada para el 5 de agosto.",
+      "R. Vega: Las comunidades de Huaripampa y San Marcos ya confirmaron participación. Es clave que el relevo conozca a los dirigentes antes de la campaña.",
+      "Carla Ninanya: Justamente, del 21 de julio al 8 de agosto estaré de vacaciones. Marco Antón toma el relevo del portafolio.",
+      "Elena Palomino: Marco necesita los accesos a SAP ambiental y al tablero Power BI. Eso es lo que hoy está pendiente en la ficha de relevo.",
+      "Carla Ninanya: Sobre el cierre progresivo de componentes, seguimos en ámbar: 45% de avance. El permiso sectorial sigue pendiente en el ministerio y ese es el riesgo principal; la aprobación del plan está prevista para el 1 de octubre.",
+      "Elena Palomino: Dejemos constancia de que el traspaso a Marco debe cubrir el estado del permiso sectorial y el contacto con los dirigentes comunales."].join(NL))
+  ];
 }
 
 /* ============ persistence ============ */
 var KEY="suite-pmo-antamina-v1";
 var DB;
-function load(){try{var r=localStorage.getItem(KEY);if(r){DB=JSON.parse(r);return;}}catch(e){}DB=seed();save();}
+function load(){try{var r=localStorage.getItem(KEY);if(r){DB=JSON.parse(r);if(!DB.transcripciones)DB.transcripciones=seedTranscripciones();return;}}catch(e){}DB=seed();save();}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){}}
 function reset(){DB=seed();save();}
 
@@ -492,8 +551,8 @@ function compromisosAbiertos(){
 function portafolios(){var s=[];consultores().forEach(function(c){if(s.indexOf(c.portafolio)<0)s.push(c.portafolio);});return s;}
 
 /* ============ state ============ */
-var state={tool:"hub",vtab:"panel",year:today().getFullYear(),modal:null,chat:[
-  {who:"bot",html:"<p>Hola 👋 Soy el <b>Asistente PMO</b>. Tengo consolidada la información de los <b>10 proyectos</b> de los 6 portafolios, las ausencias del equipo y los compromisos de las minutas.</p><p>Pregúntame por el estado de un proyecto o portafolio, riesgos, hitos, presupuesto, quién cubre una ausencia o qué compromisos siguen abiertos.</p>"}
+var state={tool:"hub",vtab:"panel",mtab:"lista",busq:{q:"",res:null,cargando:false},year:today().getFullYear(),modal:null,chat:[
+  {who:"bot",html:"<p>Hola 👋 Soy el <b>Asistente PMO</b>. Consulto los <b>10 proyectos</b> de los 6 portafolios, las ausencias del equipo, los compromisos de las actas y el <b>texto completo de las transcripciones</b> de reuniones.</p><p>Pregúntame qué se acordó en una reunión, por qué se atrasó un proyecto, quién asumió un compromiso o el estado de un portafolio. Cuando responda usando el histórico, te muestro <b>las fuentes</b>.</p>"}
 ]};
 
 /* ============ small helpers ============ */
@@ -505,6 +564,7 @@ var TOOLS=[
   {k:"hub",ic:"⌂",label:"Inicio"},
   {k:"vacaciones",ic:"🗓",label:"Relevo·PMO"},
   {k:"minutas",ic:"📝",label:"Minutas"},
+  {k:"transcripciones",ic:"🎙",label:"Transcripciones"},
   {k:"asistente",ic:"💬",label:"Asistente"}
 ];
 function renderTools(){
@@ -525,11 +585,17 @@ function hubHTML(){
      d:"Vacaciones, ausencias y relevos de los consultores. Mapa anual, radar de anticipación, control de accesos y checklist de traspaso.",
      stats:[pill("ok",consultores().length+" consultores"),pill(kp7?"warn":"muted",prox.length+" ausencias próximas"),pill("copper","Checklist de traspaso")]},
     {tool:"minutas",color:"var(--copper)",ic:"📝",t:"PMO Automa · Minutas",
-     d:"Generador de actas de reunión con agenda, acuerdos y seguimiento de compromisos por responsable y fecha.",
-     stats:[pill("copper",DB.minutas.length+" minutas"),pill(abiertos?"warn":"ok",abiertos+" compromisos abiertos")]},
+     d:"Actas con agenda, acuerdos y compromisos. Guardadas en base de datos y consultables como fuente histórica.",
+     stats:[pill("copper",DB.minutas.length+" actas"),pill(abiertos?"warn":"ok",abiertos+" compromisos abiertos"),
+            pill(API.on?"info":"muted",API.on?"Base de datos":"Local")]},
+    {tool:"transcripciones",color:"#6a5aa8",ic:"🎙️",t:"Transcripciones",
+     d:"Repositorio de transcripciones de reuniones, indexadas y buscables. Alimentan al Asistente y generan actas con IA.",
+     stats:[pill("info",(DB.transcripciones||[]).length+" transcripciones"),
+            pill("muted",(DB.transcripciones||[]).reduce(function(s,t){return s+fragsDe(t);},0)+" fragmentos")]},
     {tool:"asistente",color:"var(--info)",ic:"💬",t:"Asistente PMO",
-     d:"Bot con la información consolidada de todos los proyectos. Responde dudas de estado, riesgos, hitos, presupuesto y cobertura.",
-     stats:[pill("info",DB.proyectos.length+" proyectos"),pill(rojos?"crit":"ok",rojos+" en rojo"),pill("muted",portafolios().length+" portafolios")]}
+     d:"Responde sobre el estado de los proyectos usando los datos y el texto de las transcripciones, citando sus fuentes.",
+     stats:[pill("info",DB.proyectos.length+" proyectos"),pill(rojos?"crit":"ok",rojos+" en rojo"),
+            pill(LLM.on?"ok":"muted",LLM.on?"IA activa":"Modo local")]}
   ].map(function(c){
     return '<div class="tool-card" style="--tc:'+c.color+'" data-tool="'+c.tool+'">'+
       '<div class="tico">'+c.ic+'</div><h3>'+esc(c.t)+'</h3><div class="td">'+esc(c.d)+'</div>'+
@@ -550,7 +616,7 @@ function hubHTML(){
     '<div class="page-head"><div><h2>Herramientas</h2><div class="sub">Tres herramientas conectadas que comparten los mismos datos</div></div></div>'+
     '<div class="tgrid">'+cards+
       '<div class="tool-card soon"><div class="tico" style="background:var(--surface-2);color:var(--muted)">＋</div>'+
-      '<h3 style="color:var(--muted)">Más herramientas</h3><div class="td">Espacio reservado para las siguientes automatizaciones de la PMO: reportes ejecutivos, gestión de riesgos y tablero de CAPEX.</div>'+
+      '<h3 style="color:var(--muted)">Más herramientas</h3><div class="td">Siguientes automatizaciones de la PMO: reportes ejecutivos al cliente, gestión de riesgos y tablero de CAPEX.</div>'+
       '<div class="tgo" style="color:var(--muted)">Próximamente</div></div>'+
     '</div>';
 }
@@ -687,7 +753,22 @@ function renderMinutas(){
   document.getElementById("view").innerHTML=
     '<div class="page-head"><div><h2>PMO Automa — Generador de minutas</h2>'+
     '<div class="sub">Actas de reunión con agenda, acuerdos y seguimiento de compromisos</div></div>'+
-    '<div class="spacer"></div><button class="btn primary sm" data-mnew="1">＋ Nueva minuta</button></div>'+
+    '<div class="spacer"></div>'+
+    (API.on?'<span class="dbchip">🗄️ Base de datos · '+((API.stats&&API.stats.minutas)||DB.minutas.length)+' actas</span>'
+           :'<span class="pill muted"><span class="d"></span>Guardado en este navegador</span>')+
+    '<button class="btn primary sm" data-mnew="1" style="margin-left:10px">＋ Nueva minuta</button></div>'+
+    '<div class="subtabs">'+
+      '<button data-mtab="lista" class="'+(state.mtab==="buscar"?"":"active")+'">Minutas y compromisos</button>'+
+      '<button data-mtab="buscar" class="'+(state.mtab==="buscar"?"active":"")+'">🔎 Buscar en el histórico</button>'+
+    '</div>'+
+    (state.mtab==="buscar"?
+      '<div class="card"><div class="card-b">'+
+        '<div style="display:flex;gap:9px;margin-bottom:14px">'+
+        '<input id="q-hist" value="'+esc(state.busq.q||"")+'" placeholder="Ej. repuesto crítico, permiso sectorial, accesos Dataverse…" '+
+        'style="flex:1;background:var(--surface-3);border:1px solid var(--line);border-radius:9px;padding:11px 13px;font-size:14px;color:var(--ink);font-family:inherit">'+
+        '<button class="btn primary" data-buscar="1">Buscar</button></div>'+
+        resultadosHTML()+'</div></div>'
+    :
     '<div class="kpis">'+
       '<div class="kpi b"><div class="n tnum">'+DB.minutas.length+'</div><div class="l">Minutas registradas</div></div>'+
       '<div class="kpi c"><div class="n tnum">'+DB.minutas.reduce(function(s,m){return s+(m.acuerdos||[]).length;},0)+'</div><div class="l">Acuerdos documentados</div></div>'+
@@ -696,7 +777,7 @@ function renderMinutas(){
     '</div>'+
     (pend?'<div class="card" style="margin-bottom:22px"><div class="card-h"><h3>📌 Compromisos abiertos</h3><span class="sub">Clic en el estado para actualizarlo</span></div><div class="card-b">'+pend+'</div></div>':'')+
     '<div class="page-head" style="margin-bottom:14px"><div><h3 style="font-size:16px">Minutas</h3></div></div>'+
-    (cards?'<div class="mgrid">'+cards+'</div>':'<div class="card"><div class="empty"><div class="e-ic">📝</div>Aún no hay minutas. Crea la primera con “Nueva minuta”.</div></div>');
+    (cards?'<div class="mgrid">'+cards+'</div>':'<div class="card"><div class="empty"><div class="e-ic">📝</div>Aún no hay minutas. Crea la primera con “Nueva minuta”.</div></div>'));
 }
 function actaTexto(m){
   var L=[];
@@ -820,9 +901,8 @@ function saveMinuta(id){
     compromisos:cmp,
     notas:document.getElementById("m-not").value.trim()
   };
-  if(id){for(var i=0;i<DB.minutas.length;i++)if(DB.minutas[i].id===id)DB.minutas[i]=obj;toast("Minuta actualizada");}
-  else{DB.minutas.push(obj);toast("Minuta generada");}
-  save();state.modal={type:"mview",id:obj.id};render();
+  guardarMinutaObj(obj,!!id);
+  state.modal={type:"mview",id:obj.id};render();
 }
 function copiarActa(id){
   var t=actaTexto(minuta(id));
@@ -844,8 +924,243 @@ function descargarActa(id){
   }catch(e){toast("Descarga no disponible aquí — usa Copiar");}
 }
 
+/* ============ PERSISTENCIA DE MINUTAS ============ */
+function guardarMinutaObj(obj,esEdicion){
+  var found=false;
+  for(var i=0;i<DB.minutas.length;i++)if(DB.minutas[i].id===obj.id){DB.minutas[i]=obj;found=true;}
+  if(!found)DB.minutas.push(obj);
+  save();
+  if(API.on){
+    apiPost("/api/minutas",obj).then(function(j){
+      if(j&&j.id&&j.id!==obj.id){obj.id=j.id;save();}
+      API.stats=j.db||API.stats;
+      toast(esEdicion?"Acta actualizada en la base de datos":"Acta guardada en la base de datos");
+      render();
+    }).catch(function(){toast("Guardada solo en este navegador (sin base de datos)");});
+  }else toast(esEdicion?"Minuta actualizada":"Minuta generada");
+}
+function minutaDesdeTranscripcion(tid){
+  if(!LLM.on){toast("Requiere IA: ejecuta servidor.py");return;}
+  var t=transcripcion(tid);
+  if(!t||!t.texto){toast("La transcripción no tiene texto cargado");return;}
+  var btn=document.querySelector("[data-tmin]");
+  if(btn){btn.textContent="Redactando acta…";btn.disabled=true;}
+  var NL=String.fromCharCode(10);
+  var sys="Eres asistente de actas de una PMO minera. A partir de la TRANSCRIPCION de la reunion, redacta el acta."+NL+
+    "Responde EXACTAMENTE con estas tres secciones y nada mas, en espanol:"+NL+
+    "AGENDA:"+NL+"- ..."+NL+"ACUERDOS:"+NL+"- ..."+NL+"COMPROMISOS:"+NL+"- Descripcion | Responsable | AAAA-MM-DD"+NL+
+    "No inventes datos que no esten en la transcripcion. Si falta un dato deja el campo vacio pero conserva las barras.";
+  fetchChat([{role:"system",content:sys},
+    {role:"user",content:"Reunion: "+t.titulo+" ("+t.fecha+")"+NL+NL+"TRANSCRIPCION:"+NL+t.texto.slice(0,14000)}],1500)
+  .then(function(r){
+    var txt=r.content||"";
+    var obj={id:"M-"+today().getFullYear()+"-"+String(Math.floor(Math.random()*900)+100),
+      titulo:"Acta — "+String(t.titulo).split(" (transcripción)").join(""),
+      fecha:t.fecha,hora:"",modalidad:(t.origen==="Presencial"?"Presencial":"Virtual (Teams)"),
+      lugar:"",portafolio:t.portafolio||"",transcripcionId:t.id,
+      asistentes:String(t.participantes||"").split(",").map(function(x){return {nombre:x.trim(),rol:""};})
+        .filter(function(x){return x.nombre;}),
+      agenda:seccionIA(txt,"AGENDA"),acuerdos:seccionIA(txt,"ACUERDOS"),
+      compromisos:seccionIA(txt,"COMPROMISOS").map(function(l){
+        var p=l.split("|").map(function(x){return x.trim();});
+        return {id:uid("cp"),desc:p[0]||"",responsable:p[1]||"",fecha:p[2]||"",estado:"pendiente"};
+      }).filter(function(c){return c.desc;}),
+      notas:"Generada automáticamente desde la transcripción "+t.id+"."};
+    guardarMinutaObj(obj,false);
+    state.tool="minutas";state.mtab="lista";state.modal={type:"mview",id:obj.id};render();
+  }).catch(function(){toast("No se pudo generar el acta con IA");})
+  .then(function(){var b=document.querySelector("[data-tmin]");
+    if(b){b.textContent="✨ Generar minuta con IA";b.disabled=false;}});
+}
+
+/* ============ BUSQUEDA EN EL HISTORICO ============ */
+var VACIAS=["que","como","para","por","los","las","del","una","uno","con","cual","cuales",
+  "esta","este","hay","son","cuando","donde","quien","quienes","sobre","todos","todas"];
+function textoDeMinuta(m){
+  var NL=String.fromCharCode(10),L=[m.titulo||""];
+  var asis=(m.asistentes||[]).map(function(a){return a.nombre+(a.rol?" ("+a.rol+")":"");});
+  if(asis.length)L.push("Asistentes: "+asis.join(", "));
+  if((m.agenda||[]).length)L.push("Agenda: "+m.agenda.join(" | "));
+  if((m.acuerdos||[]).length)L.push("Acuerdos: "+m.acuerdos.join(" | "));
+  if((m.compromisos||[]).length)L.push("Compromisos: "+m.compromisos.map(function(c){
+    return c.desc+" -> "+(c.responsable||"sin responsable")+" ("+(c.fecha||"sin fecha")+")";}).join(" | "));
+  if(m.notas)L.push("Notas: "+m.notas);
+  return L.join(NL);
+}
+function buscarLocal(q){
+  var toks=norm(q).split(/[^a-z0-9]+/).filter(function(t){return t.length>2&&VACIAS.indexOf(t)<0;});
+  if(!toks.length)return [];
+  var docs=[];
+  (DB.minutas||[]).forEach(function(m){docs.push({id:m.id,tipo:"minuta",titulo:m.titulo,
+    fecha:m.fecha,portafolio:m.portafolio,texto:textoDeMinuta(m)});});
+  (DB.transcripciones||[]).forEach(function(t){docs.push({id:t.id,tipo:"transcripcion",titulo:t.titulo,
+    fecha:t.fecha,portafolio:t.portafolio,texto:t.texto||""});});
+  var out=[];
+  docs.forEach(function(d){
+    var nt=norm(d.texto+" "+d.titulo);
+    var hits=toks.filter(function(t){return nt.indexOf(t)>=0;});
+    if(!hits.length)return;
+    var pos=Math.max(0,nt.indexOf(hits[0])-90);
+    out.push({docId:d.id,tipo:d.tipo,titulo:d.titulo,fecha:d.fecha,portafolio:d.portafolio,
+      extracto:(pos>0?"…":"")+(d.texto||"").substr(pos,240)+"…",score:hits.length});
+  });
+  out.sort(function(a,b){return b.score-a.score;});
+  return out.slice(0,10);
+}
+function ejecutarBusqueda(){
+  var q=((document.getElementById("q-hist")||{}).value||"").trim();
+  state.busq.q=q;
+  if(!q){state.busq.res=null;render();return;}
+  if(API.on){
+    state.busq.cargando=true;render();
+    apiGet("/api/buscar?q="+encodeURIComponent(q)+"&limite=10").then(function(j){
+      state.busq.res=j.resultados||[];state.busq.cargando=false;render();
+    }).catch(function(){state.busq.res=buscarLocal(q);state.busq.cargando=false;render();});
+    return;
+  }
+  state.busq.res=buscarLocal(q);render();
+}
+function extractoHtml(x){
+  return esc(x||"").split("&lt;&lt;").join("<mark>").split("&gt;&gt;").join("</mark>");
+}
+function abrirResultado(id){
+  if(String(id).charAt(0)==="T")abrirTranscripcion(id);
+  else{state.modal={type:"mview",id:id};renderModal();}
+}
+function resultadosHTML(){
+  var r=state.busq.res;
+  if(state.busq.cargando)return '<div class="empty">Buscando en el histórico…</div>';
+  if(r===null)return '<div class="empty"><div class="e-ic">🔎</div>Escribe qué buscas: un acuerdo, un riesgo, un nombre o un tema.<br>Se busca dentro de todas las actas y transcripciones.</div>';
+  if(!r.length)return '<div class="empty"><div class="e-ic">🗒️</div>Sin coincidencias para «'+esc(state.busq.q)+'».</div>';
+  return '<div class="note" style="margin-bottom:10px">'+r.length+' coincidencia(s) para «'+esc(state.busq.q)+'»'+
+    (API.on?' · búsqueda de texto completo en la base de datos':' · búsqueda local en este navegador')+'</div>'+
+    r.map(function(x){
+      return '<div class="hitrow" data-hit="'+esc(x.docId)+'">'+
+        pill(x.tipo==="minuta"?"copper":"info",x.tipo==="minuta"?"Acta":"Transcripción")+
+        '<div style="flex:1"><div class="ht">'+esc(x.titulo)+'</div>'+
+        '<div class="hx">'+extractoHtml(x.extracto)+'</div>'+
+        '<div class="hm">'+esc(x.docId)+' · '+fmt(x.fecha)+' · '+esc(x.portafolio||"General")+'</div></div></div>';
+    }).join("");
+}
+
+/* ============ TRANSCRIPCIONES ============ */
+function transcripcion(id){var ts=DB.transcripciones||[];for(var i=0;i<ts.length;i++)if(ts[i].id===id)return ts[i];return null;}
+function fragsDe(t){return t.fragmentos||Math.max(1,Math.ceil(((t.texto||"").length)/900));}
+function renderTranscripciones(){
+  var ts=(DB.transcripciones||[]).slice().sort(function(a,b){return pd(b.fecha)-pd(a.fecha);});
+  var totFrag=ts.reduce(function(s,t){return s+fragsDe(t);},0);
+  var totChar=ts.reduce(function(s,t){return s+(t.caracteres||(t.texto||"").length);},0);
+  var pfs={};ts.forEach(function(t){if(t.portafolio)pfs[t.portafolio]=1;});
+  var cards=ts.map(function(t){
+    return '<div class="mcard" data-topen="'+esc(t.id)+'">'+
+      '<div class="mt">'+esc(t.titulo)+'</div>'+
+      '<div class="mm">'+esc(t.id)+' · '+fmtL(t.fecha)+' · '+esc(t.origen||"manual")+'</div>'+
+      '<div style="font-size:13px;color:var(--ink-soft)">'+esc(t.participantes||"Sin participantes registrados")+'</div>'+
+      '<div class="mfoot">'+pill("muted",esc(t.portafolio||"General"))+
+        pill("info",fragsDe(t)+" fragmentos indexados")+'</div></div>';
+  }).join("");
+  document.getElementById("view").innerHTML=
+    '<div class="page-head"><div><h2>Transcripciones de reuniones</h2>'+
+    '<div class="sub">Fuente histórica que alimenta al Asistente PMO</div></div>'+
+    '<div class="spacer"></div>'+
+    (API.on?'<span class="dbchip">🗄️ Base de datos activa</span>':'<span class="pill muted"><span class="d"></span>Guardado en este navegador</span>')+
+    '<button class="btn primary sm" data-tnew="1" style="margin-left:10px">＋ Nueva transcripción</button></div>'+
+    '<div class="kpis">'+
+      '<div class="kpi b"><div class="n tnum">'+ts.length+'</div><div class="l">Transcripciones</div></div>'+
+      '<div class="kpi i"><div class="n tnum">'+totFrag+'</div><div class="l">Fragmentos indexados</div></div>'+
+      '<div class="kpi c"><div class="n tnum">'+Math.round(totChar/1000)+'k</div><div class="l">Caracteres de contexto</div></div>'+
+      '<div class="kpi w"><div class="n tnum">'+Object.keys(pfs).length+'</div><div class="l">Portafolios cubiertos</div></div>'+
+    '</div>'+
+    (cards?'<div class="mgrid">'+cards+'</div>':
+      '<div class="card"><div class="empty"><div class="e-ic">🎙️</div>Aún no hay transcripciones.<br>Pega la transcripción de una reunión y el Asistente podrá responder con ella.</div></div>');
+}
+function abrirTranscripcion(id){
+  var t=transcripcion(id);
+  if(t&&!t.texto&&API.on){
+    state.modal={type:"tview",id:id,cargando:true};renderModal();
+    apiGet("/api/transcripciones?id="+encodeURIComponent(id)).then(function(j){
+      if(j&&j.texto){t.texto=j.texto;save();}
+      state.modal={type:"tview",id:id};renderModal();
+    }).catch(function(){state.modal={type:"tview",id:id};renderModal();});
+    return;
+  }
+  state.modal={type:"tview",id:id};renderModal();
+}
+function modalTransView(id){
+  var t=transcripcion(id);if(!t)return "";
+  var cuerpo=state.modal&&state.modal.cargando?'<div class="empty">Cargando transcripción…</div>':
+    '<div class="trans-txt">'+esc(t.texto||"(sin texto)")+'</div>';
+  return '<div class="overlay" data-close="1"><div class="modal wide"><div class="modal-h">'+
+    '<div style="flex:1"><h3>'+esc(t.titulo)+'</h3><div class="sub">'+esc(t.id)+' · '+fmtL(t.fecha)+' · '+esc(t.portafolio||"General")+'</div></div>'+
+    '<button class="icon-btn" data-close="1" aria-label="Cerrar">✕</button></div>'+
+    '<div class="modal-b">'+
+      '<div class="detail-grid" style="margin-bottom:14px">'+
+        '<div class="kv"><div class="k">Participantes</div><div class="v" style="font-size:13px">'+esc(t.participantes||"—")+'</div></div>'+
+        '<div class="kv"><div class="k">Indexado</div><div class="v" style="font-size:13px">'+fragsDe(t)+' fragmentos · '+esc(t.origen||"manual")+'</div></div>'+
+      '</div>'+cuerpo+
+      '<p class="note">El Asistente PMO busca dentro de este texto para responder y citar la fuente.</p>'+
+    '</div>'+
+    '<div class="modal-f"><button class="btn danger left" data-tdel="'+esc(t.id)+'">Eliminar</button>'+
+      '<button class="btn" data-tmin="'+esc(t.id)+'">✨ Generar minuta con IA</button>'+
+      '<button class="btn primary" data-close="1">Cerrar</button></div></div></div>';
+}
+function modalTransForm(){
+  var pfOpts=['<option value="">— General —</option>'].concat(portafolios().map(function(p){
+    return '<option>'+esc(p)+'</option>';})).join("");
+  return '<div class="overlay" data-close="1"><div class="modal wide"><div class="modal-h">'+
+    '<div style="flex:1"><h3>Nueva transcripción</h3><div class="sub">Pega el texto de la reunión; se indexará para búsqueda y para el Asistente</div></div>'+
+    '<button class="icon-btn" data-close="1" aria-label="Cerrar">✕</button></div>'+
+    '<div class="modal-b">'+
+      '<div class="field"><label>Título</label><input id="t-tit" placeholder="Ej. Comité semanal — Operaciones Mina"></div>'+
+      '<div class="fgrid3">'+
+        '<div class="field"><label>Fecha</label><input type="date" id="t-fec" value="'+iso(today())+'"></div>'+
+        '<div class="field"><label>Portafolio</label><select id="t-pf">'+pfOpts+'</select></div>'+
+        '<div class="field"><label>Origen</label><select id="t-org"><option>Teams</option><option>Presencial</option><option>Zoom</option><option>Notas manuales</option></select></div>'+
+      '</div>'+
+      '<div class="field"><label>Participantes</label><input id="t-par" placeholder="Nombres separados por coma"></div>'+
+      '<div class="field"><label>Transcripción</label><textarea id="t-txt" style="min-height:220px" placeholder="Pega aquí la transcripción completa de la reunión…"></textarea>'+
+      '<div class="hint">Puede ser la transcripción automática de Teams. Se divide en fragmentos para poder buscarla.</div></div>'+
+      '<p class="note" id="t-err" style="color:var(--crit);display:none"></p>'+
+    '</div>'+
+    '<div class="modal-f"><button class="btn" data-close="1">Cancelar</button>'+
+      '<button class="btn primary" data-tsave="1">Guardar e indexar</button></div></div></div>';
+}
+function guardarTranscripcion(){
+  var tit=((document.getElementById("t-tit")||{}).value||"").trim();
+  var txt=((document.getElementById("t-txt")||{}).value||"").trim();
+  var err=document.getElementById("t-err");
+  if(!tit){err.textContent="Indica un título.";err.style.display="block";return;}
+  if(txt.length<40){err.textContent="La transcripción es muy corta (mínimo 40 caracteres).";err.style.display="block";return;}
+  var obj={titulo:tit,fecha:document.getElementById("t-fec").value||iso(today()),
+    portafolio:document.getElementById("t-pf").value,
+    participantes:(document.getElementById("t-par")||{}).value||"",
+    origen:document.getElementById("t-org").value,texto:txt,caracteres:txt.length};
+  if(API.on){
+    apiPost("/api/transcripciones",obj).then(function(j){
+      obj.id=j.id;obj.fragmentos=j.fragmentos;API.stats=j.db||API.stats;
+      DB.transcripciones.push(obj);save();state.modal=null;
+      toast("Transcripción indexada ("+j.fragmentos+" fragmentos)");render();
+    }).catch(function(){toast("No se pudo guardar en la base de datos");});
+    return;
+  }
+  obj.id="T-"+today().getFullYear()+"-"+String(Math.floor(Math.random()*900)+100);
+  obj.fragmentos=Math.max(1,Math.ceil(txt.length/900));
+  DB.transcripciones.push(obj);save();state.modal=null;
+  toast("Transcripción guardada en este navegador");render();
+}
+function borrarTranscripcion(id){
+  DB.transcripciones=(DB.transcripciones||[]).filter(function(t){return t.id!==id;});
+  save();
+  if(API.on)apiPost("/api/transcripciones/eliminar",{id:id}).then(refrescarStats).catch(function(){});
+  state.modal=null;toast("Transcripción eliminada");render();
+}
+
 /* ============ ASISTENTE ============ */
-var SUGS=["¿Cómo van los proyectos?","¿Qué proyectos están en rojo?","Estado de Planta Concentradora","¿Qué riesgos hay abiertos?","¿Cuáles son los próximos hitos?","¿Quién sale de vacaciones pronto?","¿Quién cubre a Carla?","Compromisos pendientes","Presupuesto de Reposición Antamina"];
+var SUGS=["¿Cómo van los proyectos?","¿Qué proyectos están en rojo?",
+  "¿Por qué se retrasó la molienda SAG?","¿Qué se acordó sobre el repuesto crítico?",
+  "¿Qué dijo TI sobre los accesos a Dataverse?","¿Cuál es el riesgo del permiso sectorial?",
+  "¿Quién cubre a Carla y qué debe recibir?","Compromisos pendientes",
+  "¿Cuáles son los próximos hitos?"];
 function semDot(s){return '<span class="sem '+s+'"></span>';}
 function proyRow(p){
   var r=byId(p.respId);
@@ -1017,7 +1332,12 @@ function responder(q){
   if(/como van|resumen|general|todos|estado|proyecto|portafolio/.test(nq))return ansResumen();
   return ansFallback();
 }
-var LLM={on:false};
+var PROXY_URL="";
+var LLM={on:false,chatUrl:null,model:null,mode:null};
+var API={on:false,stats:null};
+function apiGet(p){return fetch(p).then(function(r){if(!r.ok)throw new Error("http");return r.json();});}
+function apiPost(p,b){return fetch(p,{method:"POST",headers:{"Content-Type":"application/json"},
+  body:JSON.stringify(b||{})}).then(function(r){if(!r.ok)throw new Error("http");return r.json();});}
 var SYS_PROMPT="Eres el Asistente PMO de Antamina, para consultores de la PMO (espanol de Peru). "+
 "Respondes dudas sobre el estado de los proyectos, riesgos, hitos, presupuesto/CAPEX, ausencias/relevos del equipo y compromisos de las minutas. "+
 "Usa EXCLUSIVAMENTE la informacion del bloque DATOS PMO; si algo no esta ahi, dilo con claridad y no lo inventes. "+
@@ -1064,19 +1384,40 @@ function buildMessages(q,histSource){
   msgs.push({role:"user",content:q});
   return msgs;
 }
-function fetchChat(messages,maxTok){
+function fetchChat(messages,maxTok,extra){
   var ctrl=new AbortController(),to=setTimeout(function(){ctrl.abort();},95000);
-  return fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({messages:messages,max_tokens:maxTok||1200,temperature:0.3}),signal:ctrl.signal})
+  var cuerpo={messages:messages,max_tokens:maxTok||1200,temperature:0.3};
+  if(extra)for(var k in extra)cuerpo[k]=extra[k];
+  return fetch(LLM.chatUrl||"/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(cuerpo),signal:ctrl.signal})
     .then(function(r){clearTimeout(to);if(!r.ok)throw new Error("HTTP "+r.status);return r.json();})
     .then(function(j){if(j.error)throw new Error(j.error);return j;});
 }
 function checkBackend(){
-  var ctrl=new AbortController(),to=setTimeout(function(){ctrl.abort();},2500);
-  fetch("/api/health",{signal:ctrl.signal}).then(function(r){return r.json();}).then(function(j){
-    clearTimeout(to);LLM.on=!!(j&&j.ok);LLM.model=j&&j.model;if(state.tool==="asistente")renderAsistente();
-  }).catch(function(){LLM.on=false;});
+  var cands=[{h:"/api/health",ch:"/api/chat",mode:"servidor",api:true}];
+  if(PROXY_URL){var p=PROXY_URL;while(p.charAt(p.length-1)==="/")p=p.slice(0,-1);
+    cands.push({h:p+"/health",ch:p+"/chat",mode:"nube",api:false});}
+  (function probar(i){
+    if(i>=cands.length){LLM.on=false;API.on=false;render();return;}
+    var ctrl=new AbortController(),to=setTimeout(function(){ctrl.abort();},4000);
+    fetch(cands[i].h,{signal:ctrl.signal}).then(function(r){clearTimeout(to);if(!r.ok)throw new Error("x");return r.json();})
+    .then(function(j){
+      if(j&&j.ok){
+        LLM.on=true;LLM.chatUrl=cands[i].ch;LLM.model=j.model;LLM.mode=cands[i].mode;
+        API.on=!!cands[i].api;API.stats=j.db||null;
+        if(API.on)cargarDeServidor();else render();
+      }else probar(i+1);
+    }).catch(function(){clearTimeout(to);probar(i+1);});
+  })(0);
 }
+function cargarDeServidor(){
+  Promise.all([apiGet("/api/minutas"),apiGet("/api/transcripciones")]).then(function(rs){
+    if(rs[0]&&rs[0].minutas)DB.minutas=rs[0].minutas;
+    if(rs[1]&&rs[1].transcripciones)DB.transcripciones=rs[1].transcripciones;
+    save();render();
+  }).catch(function(){render();});
+}
+function refrescarStats(){apiGet("/api/health").then(function(j){API.stats=j.db||null;}).catch(function(){});}
 function renderAsistente(){
   var log=state.chat.map(function(m){
     return '<div class="msg '+(m.who==="bot"?"bot":"user")+'"><div class="mav">'+(m.who==="bot"?"◆":"Tú")+'</div>'+
@@ -1097,23 +1438,41 @@ function renderAsistente(){
   var l=document.getElementById("chatLog");if(l)l.scrollTop=l.scrollHeight;
   var i=document.getElementById("ai-input");if(i)i.focus();
 }
+function fuentesHTML(fu){
+  if(!fu||!fu.length)return "";
+  return '<div class="fuentes-lbl">Fuentes consultadas</div>'+fu.map(function(f){
+    return '<div class="src" data-hit="'+esc(f.id)+'"><span class="sn">'+f.n+'</span>'+
+      '<div><div class="st2">'+esc(f.titulo)+'</div>'+
+      '<div class="sx">'+extractoHtml(f.extracto)+'</div>'+
+      '<div class="sx">'+(f.tipo==="minuta"?"Acta":"Transcripción")+' '+esc(f.id)+' · '+fmt(f.fecha)+'</div>'+
+      '</div></div>';
+  }).join("");
+}
+function citasLocales(q){
+  var hits=buscarLocal(q).slice(0,3);
+  if(!hits.length)return "";
+  return '<div class="fuentes-lbl">Encontrado en el histórico</div>'+hits.map(function(x,i){
+    return '<div class="src" data-hit="'+esc(x.docId)+'"><span class="sn">'+(i+1)+'</span>'+
+      '<div><div class="st2">'+esc(x.titulo)+'</div><div class="sx">'+esc(x.extracto)+'</div></div></div>';
+  }).join("");
+}
 function preguntar(q){
   q=String(q||"").trim();if(!q)return;
   if(!LLM.on){
     state.chat.push({who:"user",text:q});
-    state.chat.push({who:"bot",html:responder(q),raw:""});
+    state.chat.push({who:"bot",html:responder(q)+citasLocales(q),raw:""});
     renderAsistente();return;
   }
   var histSource=state.chat.slice();
   state.chat.push({who:"user",text:q});
-  var pend={who:"bot",html:'<span class="typing">Pensando<i></i><i></i><i></i></span>',raw:"",pending:true};
+  var pend={who:"bot",html:'<span class="typing">Consultando el histórico<i></i><i></i><i></i></span>',raw:"",pending:true};
   state.chat.push(pend);renderAsistente();
-  fetchChat(buildMessages(q,histSource)).then(function(r){
+  fetchChat(buildMessages(q,histSource),1200,API.on?{rag:true,q:q}:null).then(function(r){
     var c=(r.content||"").trim()||"(sin respuesta)";
-    pend.html=mdToHtml(c);pend.raw=c;pend.pending=false;renderAsistente();
+    pend.html=mdToHtml(c)+fuentesHTML(r.fuentes);pend.raw=c;pend.pending=false;renderAsistente();
   }).catch(function(){
-    var loc=responder(q);
-    pend.html='<div class="warnbar">No pude conectar con la IA; respondo con el motor local.</div>'+loc;
+    pend.html='<div class="warnbar">No pude conectar con la IA; respondo con el motor local.</div>'+
+      responder(q)+citasLocales(q);
     pend.raw="";pend.pending=false;renderAsistente();
   });
 }
@@ -1209,9 +1568,36 @@ function iaMinuta(){
   });
 }
 function seccionIA(txt,name){
-  var re=new RegExp(name+"\s*:?\s*([\s\S]*?)(?:\n[A-ZÁÉÍÓÚ]{4,}\s*:|$)");
-  var m=txt.match(re);if(!m)return[];
-  return m[1].split("\n").map(function(l){return l.replace(/^\s*[-*•]\s?/,"").trim();}).filter(Boolean);
+  // Extrae los items de una seccion del acta que devuelve la IA (AGENDA / ACUERDOS /
+  // COMPROMISOS). Se analiza linea por linea para tolerar negritas, numeracion y viñetas.
+  var NL=String.fromCharCode(10), VINETA=String.fromCharCode(8226);
+  var VINETAS=["-","*",VINETA,String.fromCharCode(8211),String.fromCharCode(8212)];
+  var CABECERAS=["AGENDA","ACUERDOS","COMPROMISOS","NOTAS","ASISTENTES","PARTICIPANTES","RESUMEN","OBJETIVO"];
+  var lineas=String(txt||"").split(NL), objetivo=String(name||"").toUpperCase();
+  var out=[], dentro=false;
+  function quitarFormato(x){
+    while(x.length&&"*#> ".indexOf(x.charAt(0))>=0)x=x.slice(1);
+    return x;
+  }
+  for(var i=0;i<lineas.length;i++){
+    var L=lineas[i].trim();
+    if(!L)continue;
+    var cab=null, plana=quitarFormato(norm(L).toUpperCase());
+    for(var j=0;j<CABECERAS.length;j++){
+      if(plana.indexOf(CABECERAS[j])===0){cab=CABECERAS[j];break;}
+    }
+    if(cab){dentro=(cab===objetivo);continue;}
+    if(!dentro)continue;
+    L=quitarFormato(L);
+    if(L.length&&VINETAS.indexOf(L.charAt(0))>=0)L=L.slice(1).trim();
+    else{
+      var k=0;while(k<L.length&&L.charAt(k)>="0"&&L.charAt(k)<="9")k++;
+      if(k>0&&k<L.length&&(L.charAt(k)==="."||L.charAt(k)===")"))L=L.slice(k+1).trim();
+    }
+    L=L.split("**").join("").trim();
+    if(L)out.push(L);
+  }
+  return out;
 }
 function aplicarIaMinuta(txt){
   var ag=seccionIA(txt,"AGENDA"),ac=seccionIA(txt,"ACUERDOS"),cp=seccionIA(txt,"COMPROMISOS");
@@ -1226,6 +1612,8 @@ function renderModal(){
   else if(m.type==="detail")root.innerHTML=modalDetail(m.id);
   else if(m.type==="mview")root.innerHTML=modalMinutaView(m.id);
   else if(m.type==="mform")root.innerHTML=modalMinutaForm(m.id);
+  else if(m.type==="tview")root.innerHTML=modalTransView(m.id);
+  else if(m.type==="tform")root.innerHTML=modalTransForm();
 }
 
 /* ============ render ============ */
@@ -1234,6 +1622,7 @@ function render(){
   if(state.tool==="hub")document.getElementById("view").innerHTML=hubHTML();
   else if(state.tool==="vacaciones")renderVacaciones();
   else if(state.tool==="minutas")renderMinutas();
+  else if(state.tool==="transcripciones")renderTranscripciones();
   else if(state.tool==="asistente")renderAsistente();
   renderModal();
 }
@@ -1256,7 +1645,8 @@ document.getElementById("btnReset").addEventListener("click",function(){
 document.addEventListener("click",function(e){
   var sel="[data-tool],[data-vtab],[data-open],[data-close],[data-save],[data-del],[data-edit],[data-cyc],[data-chk],"+
           "[data-genacc],[data-genchk],[data-saverel],[data-year],[data-anew],[data-mnew],[data-mopen],[data-medit],"+
-          "[data-mdel],[data-msave],[data-mcopy],[data-mdown],[data-ccyc],[data-ask],[data-send],[data-mai]";
+          "[data-mdel],[data-msave],[data-mcopy],[data-mdown],[data-ccyc],[data-ask],[data-send],[data-mai],"+
+          "[data-tnew],[data-topen],[data-tsave],[data-tdel],[data-tmin],[data-mtab],[data-buscar],[data-hit]";
   var el=e.target.closest(sel);
   if(!el)return;
   var d=el.dataset;
@@ -1292,8 +1682,18 @@ document.addEventListener("click",function(e){
   if(d.mnew!=null){state.modal={type:"mform",id:null};renderModal();return;}
   if(d.mopen){state.modal={type:"mview",id:d.mopen};renderModal();return;}
   if(d.medit){state.modal={type:"mform",id:d.medit};renderModal();return;}
-  if(d.mdel){DB.minutas=DB.minutas.filter(function(m){return m.id!==d.mdel;});save();state.modal=null;toast("Minuta eliminada");render();return;}
+  if(d.mdel){DB.minutas=DB.minutas.filter(function(m){return m.id!==d.mdel;});save();
+    if(API.on)apiPost("/api/minutas/eliminar",{id:d.mdel}).then(refrescarStats).catch(function(){});
+    state.modal=null;toast("Minuta eliminada");render();return;}
   if(el.hasAttribute("data-msave")){saveMinuta(el.getAttribute("data-msave")||null);return;}
+  if(d.tnew!=null){state.modal={type:"tform"};renderModal();return;}
+  if(d.topen){abrirTranscripcion(d.topen);return;}
+  if(d.tsave!=null){guardarTranscripcion();return;}
+  if(d.tdel){borrarTranscripcion(d.tdel);return;}
+  if(d.tmin){minutaDesdeTranscripcion(d.tmin);return;}
+  if(d.mtab){state.mtab=d.mtab;render();return;}
+  if(d.buscar!=null){ejecutarBusqueda();return;}
+  if(d.hit){abrirResultado(d.hit);return;}
   if(d.mai!=null){iaMinuta();return;}
   if(d.mcopy){copiarActa(d.mcopy);return;}
   if(d.mdown){descargarActa(d.mdown);return;}
@@ -1301,6 +1701,7 @@ document.addEventListener("click",function(e){
     var r=d.ccyc.split("|"),mm=minuta(r[0]);
     var cc=(mm.compromisos||[]).filter(function(x){return x.id===r[1];})[0];
     if(cc){cc.estado=({pendiente:"curso",curso:"hecho",hecho:"pendiente"})[cc.estado];save();
+      if(API.on)apiPost("/api/compromiso",{minutaId:mm.id,id:cc.id,estado:cc.estado}).catch(function(){});
       if(state.modal)renderModal();else render();}
     return;
   }
@@ -1311,6 +1712,7 @@ document.addEventListener("click",function(e){
 document.addEventListener("keydown",function(e){
   if(e.key==="Escape"&&state.modal){state.modal=null;render();return;}
   if(e.key==="Enter"&&e.target&&e.target.id==="ai-input"){preguntar(e.target.value);}
+  if(e.key==="Enter"&&e.target&&e.target.id==="q-hist"){ejecutarBusqueda();}
 });
 
 /* ============ boot ============ */
@@ -1320,6 +1722,11 @@ checkBackend();
 if(typeof global!=="undefined"){global.__T={seed:seed,responder:responder,chkPct:chkPct,estadoRelevo:estadoRelevo,posPct:posPct,
   accesosTpl:accesosTpl,chkTpl:chkTpl,actaTexto:actaTexto,compromisosAbiertos:compromisosAbiertos,matchProyectos:matchProyectos,
   matchPortafolio:matchPortafolio,matchConsultor:matchConsultor,hubHTML:hubHTML,minuta:minuta,ausencia:ausencia,
-  getDB:function(){return DB;},state:state,setTool:function(t){state.tool=t;render();},mdToHtml:mdToHtml,contextoPMO:contextoPMO,buildMessages:buildMessages};}
+  getDB:function(){return DB;},state:state,setTool:function(t){state.tool=t;render();},
+  mdToHtml:mdToHtml,contextoPMO:contextoPMO,buildMessages:buildMessages,
+  buscarLocal:buscarLocal,textoDeMinuta:textoDeMinuta,seedTranscripciones:seedTranscripciones,
+  seccionIA:seccionIA,aplicarIaMinuta:aplicarIaMinuta,
+  fuentesHTML:fuentesHTML,extractoHtml:extractoHtml,fragsDe:fragsDe,
+  setAPI:function(v){API.on=v;},setLLM:function(v){LLM.on=v;}};}
 })();
 </script>
